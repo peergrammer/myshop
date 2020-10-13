@@ -8,22 +8,33 @@ enum FilterOption {
   All,
 }
 
-class ProductsOverviewScreen extends StatelessWidget {
+class ProductsOverviewScreen extends StatefulWidget {
+  @override
+  _ProductsOverviewScreenState createState() => _ProductsOverviewScreenState();
+}
+
+class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
+  var _showOnlyFavorites = false;
+
   @override
   Widget build(BuildContext context) {
-    final productsContainer =
-        Provider.of<ProductsProvider>(context, listen: false);
+    /* final productsContainer =
+        Provider.of<ProductsProvider>(context, listen: false); */
     return Scaffold(
       appBar: AppBar(
         title: Text('My Shop'),
         actions: [
           PopupMenuButton(
             onSelected: (FilterOption value) {
-              if (value == FilterOption.Favorites) {
-                productsContainer.showFavoritesOnly();
-              } else {
-                productsContainer.showAll();
-              }
+              setState(() {
+                if (value == FilterOption.Favorites) {
+                  /* productsContainer.showFavoritesOnly(); */
+                  _showOnlyFavorites = true;
+                } else {
+                  /* productsContainer.showAll(); */
+                  _showOnlyFavorites = false;
+                }
+              });
             },
             itemBuilder: (context) {
               return [
@@ -47,7 +58,7 @@ class ProductsOverviewScreen extends StatelessWidget {
           )
         ],
       ),
-      body: ProductsGrid(),
+      body: ProductsGrid(_showOnlyFavorites),
     );
   }
 }
