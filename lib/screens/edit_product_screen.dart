@@ -72,12 +72,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
     });
 
     if (_editProduct.id != null) {
-      Provider.of<ProductsProvider>(context, listen: false)
+      await Provider.of<ProductsProvider>(context, listen: false)
           .updateProduct(_editProduct.id, _editProduct);
-      setState(() {
-        _isLoading = false;
-      });
-      Navigator.of(context).pop();
     } else {
       try {
         await Provider.of<ProductsProvider>(context, listen: false)
@@ -107,6 +103,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
         Navigator.of(context).pop();
       }
     }
+    setState(() {
+      _isLoading = false;
+    });
+    Navigator.of(context).pop();
   }
 
   @override
