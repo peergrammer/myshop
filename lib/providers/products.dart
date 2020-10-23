@@ -5,7 +5,7 @@ import '../models/product.dart';
 
 class ProductsProvider with ChangeNotifier {
   List<Product> _items = [
-    Product(
+    /* Product(
       id: 'p1',
       title: 'Red Shirt',
       description: 'A red shirt - it is pretty red!',
@@ -36,7 +36,7 @@ class ProductsProvider with ChangeNotifier {
       price: 49.99,
       imageUrl:
           'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
-    ),
+    ), */
   ];
 
   /* var _showFavoritesOnly = false; */
@@ -60,6 +60,29 @@ class ProductsProvider with ChangeNotifier {
  */
   Product findById(String id) {
     return _items.firstWhere((element) => element.id == id);
+  }
+
+  Future<void> fetchAndSetProduct() async {
+    const url = 'https://myshop-77af8.firebaseio.com/products.json';
+    try {
+      final response = await http.get(url);
+      final extracted = json.decode(response.body) as Map<String, dynamic>;
+      final List<Product> loadedProducts = [];
+      extracted.forEach((key, prod) {
+        loadedProducts.add(Product(
+          id: key,
+          title: prod['title'],
+          price: prod['price'],
+          description: prod['description'],
+          isFavorite: prod['isFavorite'],
+          imageUrl: prod['imageUrl'],
+        ));
+      });
+      _items = loadedProducts;
+      notifyListeners();
+    } catch (error) {
+      throw (error);
+    }
   }
 
   Future<void> addProduct(Product product) async {
