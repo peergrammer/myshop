@@ -15,6 +15,9 @@ class ProductsProvider with ChangeNotifier {
     return [..._items];
   }
 
+  final String authToken;
+  ProductsProvider(this.authToken, this._items);
+
   /* void showFavoritesOnly() {
     _showFavoritesOnly = true;
     notifyListeners();
@@ -30,7 +33,8 @@ class ProductsProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProduct() async {
-    const url = 'https://myshop-77af8.firebaseio.com/products.json';
+    final url =
+        'https://myshop-77af8.firebaseio.com/products.json?auth=$authToken';
     try {
       final response = await http.get(url);
       final extracted = json.decode(response.body) as Map<String, dynamic>;
@@ -38,6 +42,7 @@ class ProductsProvider with ChangeNotifier {
       if (extracted == null) {
         return;
       }
+
       extracted.forEach((key, prod) {
         loadedProducts.add(Product(
           id: key,
